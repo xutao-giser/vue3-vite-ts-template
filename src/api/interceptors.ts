@@ -12,7 +12,6 @@ class Interceptors {
       timeout: 500000,
       headers: {
         'Content-Type': 'application/json'
-        // 'X-Authorization': token
       }
     })
     this.initRequest(this.instance)
