@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "node",
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": false,
+    "allowSyntheticDefaultImports": true,
+    "strictFunctionTypes": false,
+    "jsx": "preserve",
+    "baseUrl": "./",
+    "allowJs": true,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "experimentalDecorators": true,
+    "types": ["vite/client","node"],
+    "incremental": true,
+    "skipLibCheck": true,
+    "declaration": true,
+    "removeComments": true,
+    "target": "es6",
+    "lib": [
+      "ESNext", "DOM"
+    ],
+    "typeRoots": [
+      "./src/types",
+      "./node_modules/vue/types"
+    ],
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "plugins": [
+    {
+      "name": "@vuedx/typescript-plugin-vue"
+    }
+  ],
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
+  "exclude": ["node_modules", "dist", "**/*.js"]
+}

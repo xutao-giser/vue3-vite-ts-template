@@ -1,0 +1,8 @@
+/.eslintrc.js
+/vite.config.ts
+
+/config/*
+/public/*
+*.less
+/src/assets/*
+/src/vendors/*

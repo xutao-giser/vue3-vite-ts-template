@@ -1,0 +1,17 @@
+node_modules
+.DS_Store
+dist
+dist-test
+dist.zip
+.npmrc
+.cache
+*.local
+.idea/
+.vscode/
+package-lock.json
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
