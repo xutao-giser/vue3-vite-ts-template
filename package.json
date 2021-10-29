@@ -7,7 +7,6 @@
         "build:test": "vite build --mode test",
         "preview": "npm run build && vite preview",
         "preview:dist": "vite preview",
-        "report": "cross-env REPORT=true npm run build",
         "lint": "eslint ./src --ext .vue,.js,.ts",
         "lint-fix": "eslint ./src --fix  --ext .vue,.js,.ts"
     },
