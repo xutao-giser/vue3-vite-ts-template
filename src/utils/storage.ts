@@ -31,7 +31,7 @@ export const sessionStorage = {
   get<T>(key: string) {
     const value = window.sessionStorage.getItem(key)
     if (value && value != 'undefined' && value != 'null') {
-      return JSON.parse(value)
+      return <T>JSON.parse(value)
     }
     return null
   },
