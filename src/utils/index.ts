@@ -1,5 +1,3 @@
-import _ from 'lodash-es'
-
 export function unitConversionWid(param: number): string {
   const designWidth = 1920
   // const width = document.body.clientWidth;
@@ -47,8 +45,4 @@ export const formatDateTime = function (date: Date,fmt = 'yyyy-MM-dd') {
   }
 
   return fmt
-}
-
-export const uniqueByValue = function (arr, value) {
-  return _.uniqBy(arr, value)
 }

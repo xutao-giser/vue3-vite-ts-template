@@ -7,6 +7,7 @@ import { configHtmlPlugin } from './html'
 import { configVisualizerConfig } from './visualizer'
 import { configEslintPlugin } from './eslint'
 import styleImport from 'vite-plugin-style-import'
+import cesium from 'vite-plugin-cesium'
 
 // gen vite plugins
 export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
@@ -20,6 +21,9 @@ export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
 
   // eslint
   vitePlugins.push(configEslintPlugin())
+
+  // cesium
+  vitePlugins.push(cesium())
 
   // todo 按需加载存在打包问题
   vitePlugins.push(styleImport({

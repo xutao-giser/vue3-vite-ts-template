@@ -1,16 +1,17 @@
 <template>
   <div class="h-screen">
-    Hello World !
+    <Map></Map>
   </div>
 </template>
 
 <script lang="ts">
-import {
-  defineComponent
-} from 'vue'
+import { defineComponent } from 'vue';
+import Map from '@/components/Map.vue'
 export default defineComponent({
-  name: 'Home'
-})
+  name: 'Home',
+  components:{
+    Map
+  }
+});
 </script>
-<style scoped lang="less">
-</style>
+<style scoped lang="less"></style>

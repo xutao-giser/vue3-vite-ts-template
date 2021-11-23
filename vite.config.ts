@@ -40,6 +40,7 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
     resolve: {
       alias: {
         '@': pathResolve('src'),
+        '~': pathResolve('./')
       },
       extensions: ['.ts', '.tsx', '.js', '.json', '.d.ts'],
     },
