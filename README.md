@@ -1,5 +1,5 @@
-# Vue3.x + Vite + Typescript
-模板工程
+# Vue3.x + Vite + Typescript + Cesium
+Cesium 模板工程
 
 ## Project setup
 ```
