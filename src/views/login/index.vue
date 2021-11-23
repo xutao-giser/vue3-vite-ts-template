@@ -1,5 +1,5 @@
 <template>
-  <div class="h-screen"> Hello World ! </div>
+  <div class="h-screen"> 登录 </div>
 </template>
 
 <script lang="ts">
