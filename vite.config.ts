@@ -14,14 +14,9 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
   const env = loadEnv(mode, root);
   const configEnv: string = process.env.NODE_ENV || 'development';
   const viteEnv = wrapperEnv(env);
-  const {
-    VITE_PORT,
-    VITE_PUBLIC_PATH,
-    VITE_DROP_CONSOLE,
-    VITE_LEGACY = false,
-  } = viteEnv;
+  const { VITE_PORT, VITE_PUBLIC_PATH, VITE_DROP_CONSOLE, VITE_LEGACY = false } = viteEnv;
   const isBuild = command === 'build';
-  console.log(isBuild,mode);
+  console.log(isBuild, mode);
   const proxy: Object = isBuild
     ? {}
     : {
@@ -44,14 +39,14 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
       extensions: ['.ts', '.tsx', '.js', '.json', '.d.ts'],
     },
     optimizeDeps: {
-      include: ['axios'],
+      include: ['axios', 'element-plus/lib/locale/lang/zh-cn', 'element-plus/lib/locale/lang/en'],
       exclude: [],
     },
     ...proxy,
     build: {
       target: 'esnext',
       sourcemap: !isBuild,
-      outDir: mode === 'test'?`dist-test`:'dist',
+      outDir: mode === 'test' ? `dist-test` : 'dist',
       polyfillDynamicImport: VITE_LEGACY,
       terserOptions: {
         compress: {
@@ -61,22 +56,25 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
       },
       rollupOptions: {
         output: {
-          manualChunks: {
-          },
+          manualChunks: {},
         },
       },
       // Turning off brotliSize display can slightly reduce packaging time
       brotliSize: false,
+      // 消除打包大小超过500kb警告
+      chunkSizeWarningLimit: 2000,
     },
     css: {
       preprocessorOptions: {
         less: {
-          additionalData:  `@import "${pathResolve('src/styles/index.less')}";`,
-          javascriptEnabled: true
-        }
+          additionalData: `@import "${pathResolve('src/styles/index.less')}";`,
+          javascriptEnabled: true,
+        },
       },
     },
-    define: {},
+    define: {
+      __INTLIFY_PROD_DEVTOOLS__: false,
+    },
     plugins: createVitePlugins(viteEnv, isBuild),
   };
 };

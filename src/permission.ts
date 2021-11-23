@@ -1,7 +1,6 @@
 import { getToken } from '@/utils/auth'
 import router from '@/router'
-import { message } from 'ant-design-vue'
-
+import { ElMessage } from 'element-plus'
 const whiteList = ['/login']
 
 router.beforeEach(async (to, from, next) => {
@@ -13,7 +12,7 @@ router.beforeEach(async (to, from, next) => {
       next()
     } else {
       next(`/login?redirect=${to.path}`)
-      message.warning('请先登录')
+      ElMessage.warning('请先登录')
     }
   }
 })

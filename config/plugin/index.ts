@@ -7,6 +7,7 @@ import { configHtmlPlugin } from './html'
 import { configVisualizerConfig } from './visualizer'
 import { configEslintPlugin } from './eslint'
 import styleImport from 'vite-plugin-style-import'
+import ElementPlus from "unplugin-element-plus/vite";
 
 // gen vite plugins
 export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
@@ -22,18 +23,7 @@ export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
   vitePlugins.push(configEslintPlugin())
 
   // todo 按需加载存在打包问题
-  vitePlugins.push(styleImport({
-    libs: [
-      {
-        libraryName: 'ant-design-vue',
-        esModule: true,
-        resolveComponent: name => `ant-design-vue/es/${name}`,
-        resolveStyle: (name) => {
-          return `ant-design-vue/es/${name}/style/index`;
-        },
-      }
-    ]
-  }))
+  vitePlugins.push(ElementPlus())
 
   return vitePlugins
 }

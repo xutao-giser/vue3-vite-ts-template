@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios'
-import { message } from 'ant-design-vue'
+import { ElMessage } from 'element-plus'
 import { getToken } from '@/utils/auth'
 import { mainConfig } from '@/store'
 
@@ -9,7 +9,7 @@ class Interceptors {
   constructor() {
     this.instance = axios.create({
       baseURL: mainConfig.baseUrl,
-      timeout: 500000,
+      timeout: 5000,
       headers: {
         'Content-Type': 'application/json'
       }
@@ -44,7 +44,7 @@ class Interceptors {
             return response.data
           }
         } else {
-          message.error(response.data.msg)
+          ElMessage.error(response.data.msg)
           return Promise.reject(new Error(response.data.msg))
         }
       },
@@ -61,7 +61,7 @@ class Interceptors {
         if (response.data.code === 1) {
           return response
         } else {
-          message.error(response.data.msg)
+          ElMessage.error(response.data.msg)
           return Promise.reject(new Error(response.data.msg))
         }
       },
