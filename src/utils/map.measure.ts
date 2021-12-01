@@ -34,7 +34,7 @@ const tipLabelStyle = {
   horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
   pixelOffset: new Cesium.Cartesian2(20, 0),
   scaleByDistance: undefined,
-  //heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+  heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
   disableDepthTestDistance: Number.POSITIVE_INFINITY
 };
 
