@@ -5,48 +5,31 @@ import axios from 'axios';
 class CesiumMap {
   viewer!: Cesium.Viewer;
   private center = [102.959256, 25.254609];
-  private previousTime: number
   constructor(container: string, config?: Cesium.Viewer.ConstructorOptions | undefined) {
     this.viewer = new Cesium.Viewer(container, {
-      animation: false,
-      timeline: false,
-      fullscreenButton: false,
-      navigationHelpButton: false,
-      sceneModePicker: false,
-      geocoder: false,
-      homeButton: false,
-      baseLayerPicker: false,
-      infoBox: false,
-      selectionIndicator: false,
-      orderIndependentTranslucency: false,
+      animation: false, // 是否创建动画小器件，左下角仪表
+      timeline: false,  // 是否显示时间轴
+      fullscreenButton: false,  // 是否显示全屏按钮
+      navigationHelpButton: false,   // 是否显示右上角的帮助按钮
+      sceneModePicker: false, // 是否显示3D/2D选择器
+      geocoder: false,  // 是否显示geocoder小器件，右上角查询按钮
+      homeButton: false,  // 是否显示Home按钮
+      baseLayerPicker: false, // 是否显示图层选择器
+      infoBox: false, // 是否显示信息框
+      selectionIndicator: false,  // 是否显示选取指示器组件
+      orderIndependentTranslucency: false,  //设置背景透明
+      sceneMode: Cesium.SceneMode.SCENE3D, // 初始场景模式
+      scene3DOnly: true, // 如果设置为true，则所有几何图形以3D模式绘制以节约GPU资源
       ...config
     });
-    this.previousTime = 0
-    const viewer: any = this.viewer;
-    // viewer.scene.sun.show = false
-    viewer.scene.moon.show = false;
-    viewer._cesiumWidget._creditContainer.style.display = 'none';
+    this.viewer.scene.moon.show = false;
+    (this.viewer.cesiumWidget.creditContainer as any).style.display = 'none';
     this.cancelTileError();
     this.listenMousePosition();
   }
 
-  onTickCallback() {
-    const currentTime = this.viewer.clock.currentTime.secondsOfDay
-    const delta = (currentTime - this.previousTime) / 1000
-    this.previousTime = currentTime
-    this.viewer.scene.camera.rotate(Cesium.Cartesian3.UNIT_Z, -delta)
-  }
-
-  startRotate() {
-    this.viewer.clock.multiplier = 100 //速度
-    this.viewer.clock.shouldAnimate = true
-    this.previousTime = this.viewer.clock.currentTime.secondsOfDay
-    this.viewer.clock.onTick.addEventListener(this.onTickCallback)
-  }
-
-  stopRotate() {
-    this.viewer.clock.onTick.removeEventListener(this.onTickCallback)
-    this.viewer.clock.shouldAnimate = false
+  destroy() {
+    this.viewer.destroy();
   }
 
   disableControl() {
@@ -59,10 +42,6 @@ class CesiumMap {
     this.viewer.scene.screenSpaceCameraController.enableZoom = true
     this.viewer.scene.screenSpaceCameraController.enableRotate = true
     this.viewer.scene.screenSpaceCameraController.enableTilt = true
-  }
-
-  destroy() {
-    this.viewer.destroy();
   }
 
   /**加载完底图的回调，在构建对象时手动调用 */
@@ -107,16 +86,16 @@ class CesiumMap {
     });
   }
 
-  flyToTarget(target:any,callback?:any) {
-    const isDone = this.viewer.flyTo(target,{
+  flyToTarget(target: any, callback?: any) {
+    const isDone = this.viewer.flyTo(target, {
       duration: 0,
       offset: {
         heading: Cesium.Math.toRadians(0.0),
         pitch: Cesium.Math.toRadians(-90),
         range: 0.0
       }
-    })
-    callback(isDone)
+    });
+    callback(isDone);
   }
 
   setView(lng: number, lat: number, height?: number) {
@@ -155,75 +134,80 @@ class CesiumMap {
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
   }
 
-  addPolygonPrimitive(geojson,color:Cesium.Color,height = 0) {
-    const coords: number[] = []
-    geojson.features.forEach(feature => {
-      const { geometry } = feature
-      const type = geometry.type
-      const coordinates =
-        type === 'MultiPolygon' || type === 'MultiLineString'
-          ? geometry.coordinates[0][0]
-          : geometry.coordinates[0]
-      
-      coordinates.forEach((e: number[]) => {
-        coords.push(...e)
-      })
+  createPolygonPrimitive(geometry,name,color: Cesium.Color = Cesium.Color.RED) {
+    const coords: number[] = [];
+    const type = geometry.type;
+    const coordinates =
+      type === 'MultiPolygon' ? geometry.coordinates[0][0] : geometry.coordinates[0];
+    coordinates.forEach((e: number[]) => {
+      coords.push(...e);
     });
-    const polygonHierarchy = new Cesium.PolygonHierarchy(
-      Cesium.Cartesian3.fromDegreesArray(coords)
-    )
-    const polygonGeometry = new Cesium.PolygonGeometry({
-      polygonHierarchy: polygonHierarchy,
-      height: height
+    const instance = new Cesium.GeometryInstance({
+      geometry: new Cesium.PolygonGeometry({
+        polygonHierarchy: new Cesium.PolygonHierarchy(
+          Cesium.Cartesian3.fromDegreesArray(coords)
+        )
+      }),
+      id:name
     })
-    return this.viewer.scene.primitives.add(
-      new Cesium.Primitive({
-        geometryInstances: new Cesium.GeometryInstance({
-          geometry: polygonGeometry
-        }),
-        appearance: new Cesium.EllipsoidSurfaceAppearance({
-          aboveGround: false,
-          material: Cesium.Material.fromType('Color', {
-            color
-          })
+    return new Cesium.Primitive({
+      geometryInstances: instance,
+      appearance: new Cesium.EllipsoidSurfaceAppearance({
+        aboveGround: true,
+        material: Cesium.Material.fromType('Color', {
+          color
         })
       })
-    )
+    })
   }
 
-  addPolylinePrimitive(geojson,color:Cesium.Color,height = 0) {
-    const coords: number[] = []
+  addPolygonGeojsonPrimitive(geojson,name:string,color: Cesium.Color = Cesium.Color.RED) {
+    const collection = new Cesium.PrimitiveCollection();
     geojson.features.forEach(feature => {
-      const { geometry } = feature
-      const type = geometry.type
-      const coordinates =
-        type === 'MultiLineString'
-          ? geometry.coordinates[0][0]
-          : geometry.coordinates[0]
-      coordinates.forEach((e: number[]) => {
-        coords.push(...e)
-      })
+      const { geometry } = feature;
+      const primitive = this.createPolygonPrimitive(geometry,name,color)
+      collection.add(primitive);
     });
-    const polygonHierarchy = new Cesium.PolygonHierarchy(
-      Cesium.Cartesian3.fromDegreesArray(coords)
-    )
-    const polygonOutlineGeometry = new Cesium.PolygonOutlineGeometry({
-      polygonHierarchy: polygonHierarchy,
-      height: height
-    })
-    this.viewer.scene.primitives.add(
-      new Cesium.Primitive({
-        geometryInstances: new Cesium.GeometryInstance({
-          geometry: polygonOutlineGeometry
-        }),
-        appearance: new Cesium.EllipsoidSurfaceAppearance({
-          aboveGround: false,
-          material: Cesium.Material.fromType('Color', {
-            color
-          })
+    this.viewer.scene.primitives.add(collection)
+    return collection
+  }
+
+  createPolylinePrimitive(geometry,name,color: Cesium.Color = Cesium.Color.RED) {
+    const coords: number[] = [];
+    const type = geometry.type;
+    const coordinates =
+      type === 'MultiLineString' || type === 'MultiPolygon'
+        ? geometry.coordinates[0][0]
+        : geometry.coordinates[0];
+    coordinates.forEach((e: number[]) => {
+      coords.push(...e);
+    });
+    const instance = new Cesium.GeometryInstance({
+      geometry: new Cesium.GroundPolylineGeometry({
+        positions: Cesium.Cartesian3.fromDegreesArray(coords),
+        width: 3
+      }),
+      id:name
+    });
+    return new Cesium.GroundPolylinePrimitive({
+      geometryInstances: instance,
+      appearance: new Cesium.PolylineMaterialAppearance({
+        material: Cesium.Material.fromType('Color', {
+          color
         })
       })
-    )
+    });
+  }
+
+  addPolylineGeojsonPrimitive(geojson,name:string,color: Cesium.Color = Cesium.Color.RED) {
+    const collection = new Cesium.PrimitiveCollection();
+    geojson.features.forEach(feature => {
+      const { geometry } = feature;
+      const primitive = this.createPolylinePrimitive(geometry,name,color)
+      collection.add(primitive);
+    });
+    this.viewer.scene.primitives.add(collection)
+    return collection
   }
 
   addGeoserverWMTS(layer: string): Cesium.ImageryLayer {
@@ -263,7 +247,7 @@ class CesiumMap {
     return this.viewer.imageryLayers.addImageryProvider(provider);
   }
 
-  addGeoserverLayer(layers: string, url = '', opt: any = {}, index?: number): Cesium.ImageryLayer {
+  addGeoserverLayer(layers: string, opt: any = {}, url = '', index?: number): Cesium.ImageryLayer {
     const provider = new Cesium.WebMapServiceImageryProvider({
       url: url ? url : `${mainConfig.geoserverUrl}/geoserver/wms`,
       layers,
@@ -309,14 +293,6 @@ class CesiumMap {
     this.viewer.imageryLayers.remove(layer);
   }
 
-  removeTopPrimitive() {
-    const layers = this.viewer.scene.groundPrimitives;
-    if (layers.length > 0) {
-      const topLayer = layers.get(layers.length - 1);
-      this.viewer.scene.groundPrimitives.remove(topLayer);
-    }
-  }
-
   getImageLayersLength() {
     const layers = this.viewer.imageryLayers;
     return layers.length;
@@ -330,31 +306,7 @@ class CesiumMap {
   addGeoJson(json: Cesium.GeoJsonDataSource, opts?: Cesium.GeoJsonDataSource.LoadOptions) {
     const datasource: any = Cesium.GeoJsonDataSource.load(json, opts);
     this.viewer.dataSources.add(datasource);
-    return datasource
-  }
-
-  loadBound(feature: any) {
-    const coordinates = feature.geometry.coordinates[0][0];
-    const arr: number[] = [];
-    coordinates.forEach((e: number[]) => {
-      arr.push(...e);
-    });
-    const instance = new Cesium.GeometryInstance({
-      geometry: new Cesium.GroundPolylineGeometry({
-        positions: Cesium.Cartesian3.fromDegreesArray(arr),
-        width: 3
-      })
-    });
-    const primitive = new Cesium.GroundPolylinePrimitive({
-      geometryInstances: instance,
-      appearance: new Cesium.PolylineMaterialAppearance({
-        material: Cesium.Material.fromType('Color', {
-          color: Cesium.Color.RED
-        })
-      }),
-      show: true
-    });
-    this.viewer.scene.groundPrimitives.add(primitive);
+    return datasource;
   }
 
   private cartesian3ToDegree(cartesian3: Cesium.Cartesian3) {

@@ -17,65 +17,17 @@ import CesiumMap from '@/utils/map.init'
 export default defineComponent({
   name: 'Map',
   props: {
-    animation: {
-      type: Boolean,
-      default: false
-    },
-    baseLayerPicker: {
-      type: Boolean,
-      default: false
-    },
-    fullscreenButton: {
-      type: Boolean,
-      default: false
-    },
-    geocoder: {
-      type: Boolean,
-      default: false
-    },
-    homeButton: {
-      type: Boolean,
-      default: false
-    },
-    infoBox: {
-      type: Boolean,
-      default: false
-    },
-    sceneModePicker: {
-      type: Boolean,
-      default: false
-    },
-    selectionIndicator: {
-      type: Boolean,
-      default: false
-    },
-    timeline: {
-      type: Boolean,
-      default: false
-    },
-    navigationHelpButton: {
-      type: Boolean,
-      default: false
-    },
-    scene3DOnly: {
-      type: Boolean,
-      default: true
-    },
     useDefaultRenderLoop: {
       type: Boolean,
       default: true
     },
     showRenderLoopErrors: {
       type: Boolean,
-      default: true
+      default: false
     },
     automaticallyTrackDataSourceClocks: {
       type: Boolean,
       default: true
-    },
-    sceneMode: {
-      type: Number,
-      default: Cesium.SceneMode.SCENE3D
     },
     globalViewerMountOnWindow: {
       type: Boolean,
@@ -101,17 +53,6 @@ export default defineComponent({
   },
   setup(props) {
     const DEFAULT_OPT = {
-      animation: props.animation, // 是否创建动画小器件，左下角仪表
-      baseLayerPicker: props.baseLayerPicker, // 是否显示图层选择器
-      fullscreenButton: props.fullscreenButton, // 是否显示全屏按钮
-      geocoder: props.geocoder, // 是否显示geocoder小器件，右上角查询按钮
-      homeButton: props.homeButton, // 是否显示Home按钮
-      infoBox: props.infoBox, // 是否显示信息框
-      sceneModePicker: props.sceneModePicker, // 是否显示3D/2D选择器
-      selectionIndicator: props.sceneModePicker, // 是否显示选取指示器组件
-      timeline: props.timeline, // 是否显示时间轴
-      navigationHelpButton: props.navigationHelpButton, // 是否显示右上角的帮助按钮
-      scene3DOnly: props.scene3DOnly, // 如果设置为true，则所有几何图形以3D模式绘制以节约GPU资源
       // clock: new Cesium.Clock(), // 用于控制当前时间的时钟对象
       // selectedImageryProviderViewModel: undefined, // 当前图像图层的显示模型，仅baseLayerPicker设为true有意义
       // imageryProviderViewModels: Cesium.createDefaultImageryProviderViewModels(), // 可供BaseLayerPicker选择的图像图层ProviderViewModel数组
@@ -131,10 +72,9 @@ export default defineComponent({
       // fullscreenElement: document.body, // 全屏时渲染的HTML元素,
       useDefaultRenderLoop: props.useDefaultRenderLoop, // 如果需要控制渲染循环，则设为true
       // targetFrameRate: undefined, // 使用默认render loop时的帧率
-      showRenderLoopErrors: props.showRenderLoopErrors, // 如果设为true，将在一个HTML面板中显示错误信息
+      showRenderLoopErrors: props.showRenderLoopErrors, // 如果设为true，将在一个HTML面板中显示渲染错误信息
       // automaticallyTrackDataSourceClocks: true, // 自动追踪最近添加的数据源的时钟设置
       // contextOptions: undefined, // 传递给Scene对象的上下文参数（scene.options）
-      sceneMode: props.sceneMode, // 初始场景模式
       // mapProjection: new Cesium.WebMercatorProjection(), //地图投影体系
       // dataSources: new Cesium.DataSourceCollection() // 需要进行可视化的数据源的集合
       shadows: props.shadows,
@@ -203,7 +143,6 @@ export default defineComponent({
     })
 
     onUnmounted(() => {
-      //const { appContext : { config: { globalProperties:ctx } } } = getCurrentInstance() as any
       ctx.$map.destroy()
     })
 
