@@ -153,7 +153,7 @@ class CesiumMap {
     return new Cesium.Primitive({
       geometryInstances: instance,
       appearance: new Cesium.EllipsoidSurfaceAppearance({
-        aboveGround: true,
+        aboveGround: false,
         material: Cesium.Material.fromType('Color', {
           color
         })
