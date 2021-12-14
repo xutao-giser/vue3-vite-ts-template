@@ -6,7 +6,6 @@ import { ViteEnv } from '../env'
 import { configHtmlPlugin } from './html'
 import { configVisualizerConfig } from './visualizer'
 import { configEslintPlugin } from './eslint'
-import styleImport from 'vite-plugin-style-import'
 import ElementPlus from "unplugin-element-plus/vite";
 
 // gen vite plugins
