@@ -62,8 +62,8 @@ declare type ElRef<T extends HTMLElement = HTMLDivElement> = Nullable<T>;
 
 type IsSame<A, B> = A | B extends A & B ? true : false;
 
-declare interface MenuItem {
-  id: string | number
-  label: string
-  children: MenuItem[]
+declare module '*.vue' {
+  import { defineComponent } from 'vue';
+  const Component: ReturnType<typeof defineComponent>;
+  export default Component;
 }
