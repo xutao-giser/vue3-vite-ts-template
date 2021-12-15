@@ -5,7 +5,6 @@ import {
   ElBreadcrumb,
   ElBreadcrumbItem,
   ElScrollbar,
-  ElSubMenu,
   ElButton,
   ElCol,
   ElRow,
@@ -22,8 +21,6 @@ import {
   ElInput,
   ElForm,
   ElFormItem,
-  ElLoading,
-  ElPopover,
   ElPopper,
   ElTooltip,
   ElPagination,
@@ -31,7 +28,7 @@ import {
   ElRadioButton,
   ElRadioGroup
 } from 'element-plus';
-import 'element-plus/dist/index.css'
+import 'element-plus/lib/theme-chalk/index.css'
 
 export default (app: App<Element>) => {
   app.use(ElButton)
@@ -40,7 +37,6 @@ export default (app: App<Element>) => {
     .use(ElBreadcrumb)
     .use(ElBreadcrumbItem)
     .use(ElScrollbar)
-    .use(ElSubMenu)
     .use(ElCol)
     .use(ElRow)
     .use(ElSpace)
@@ -56,8 +52,6 @@ export default (app: App<Element>) => {
     .use(ElInput)
     .use(ElForm)
     .use(ElFormItem)
-    .use(ElLoading)
-    .use(ElPopover)
     .use(ElTooltip)
     .use(ElPagination)
     .use(ElAlert)

@@ -6,7 +6,6 @@ import { ViteEnv } from '../env'
 import { configHtmlPlugin } from './html'
 import { configVisualizerConfig } from './visualizer'
 import { configEslintPlugin } from './eslint'
-import ElementPlus from "unplugin-element-plus/vite";
 
 // gen vite plugins
 export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
@@ -20,9 +19,6 @@ export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
 
   // eslint
   vitePlugins.push(configEslintPlugin())
-
-  // todo 按需加载存在打包问题
-  vitePlugins.push(ElementPlus())
 
   return vitePlugins
 }

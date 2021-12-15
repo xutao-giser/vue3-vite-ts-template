@@ -39,7 +39,7 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
       extensions: ['.ts', '.tsx', '.js', '.json', '.d.ts'],
     },
     optimizeDeps: {
-      include: ['axios', 'element-plus/lib/locale/lang/zh-cn', 'element-plus/lib/locale/lang/en'],
+      include: ['axios'],
       exclude: [],
     },
     ...proxy,
@@ -56,7 +56,10 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
       },
       rollupOptions: {
         output: {
-          manualChunks: {},
+          manualChunks: {
+            vue: ['vue', 'vue-router'],
+            'element-plus': ['element-plus'],
+          },
         },
       },
       // Turning off brotliSize display can slightly reduce packaging time
